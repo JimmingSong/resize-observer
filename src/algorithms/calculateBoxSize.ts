@@ -15,7 +15,9 @@ interface ResizeObserverSizeCollection {
 const cache = new WeakMap<Element, ResizeObserverSizeCollection>();
 const scrollRegexp = /auto|scroll/;
 const verticalRegexp = /^tb|vertical/;
-const IE = (/msie|trident/i).test(global.navigator && global.navigator.userAgent);
+const isIE = function () {
+  return (/msie|trident/i).test(global.navigator && global.navigator.userAgent);
+};
 const parseDimension = (pixel: string | null): number => parseFloat(pixel || '0');
 
 // Helper to generate and freeze a ResizeObserverSize
@@ -56,7 +58,7 @@ const calculateBoxSizes = (target: Element, forceRecalculation = false): ResizeO
   const svg = isSVG(target) && (target as SVGElement).ownerSVGElement && (target as SVGGraphicsElement).getBBox();
 
   // IE does not remove padding from width/height, when box-sizing is border-box.
-  const removePadding = !IE && cs.boxSizing === 'border-box';
+  const removePadding = !isIE() && cs.boxSizing === 'border-box';
 
   // Switch sizes if writing mode is vertical.
   const switchSizes = verticalRegexp.test(cs.writingMode || '');
